@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{6A3B3CA6-65BD-7FC2-9389-6FB89938BDDE}</ProjectGuid>
+    <ProjectGuid>{EA8AFF21-C626-922E-9FB1-D903FC830FB6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Unity.Timeline</AssemblyName>
@@ -404,9 +404,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>Library/PackageCache/com.unity.nuget.newtonsoft-json@3.0.2/Runtime/Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NugetForUnity">
-      <HintPath>Assets/NuGet/Editor/NugetForUnity.dll</HintPath>
-    </Reference>
     <Reference Include="netstandard">
       <HintPath>/Applications/Unity/Hub/Editor/2021.3.15f1/Unity.app/Contents/NetStandard/ref/2.1.0/netstandard.dll</HintPath>
     </Reference>
@@ -776,11 +773,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="UnityEditor.UI.csproj">
-      <Project>{22B74EC5-FB2B-AE3C-E32B-87B99D8D22D8}</Project>
+      <Project>{D06C0A22-77E8-ED76-13C5-E31EF2B87B99}</Project>
       <Name>UnityEditor.UI</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEngine.UI.csproj">
-      <Project>{34385115-BCFE-F9D8-3FBE-F022F833387E}</Project>
+      <Project>{B57C12CC-60A9-F3E9-B980-C2601F85BE18}</Project>
       <Name>UnityEngine.UI</Name>
     </ProjectReference>
   </ItemGroup>

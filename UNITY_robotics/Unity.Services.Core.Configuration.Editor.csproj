@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{153402DE-30C6-84BA-DAAB-E09EFE1F5A19}</ProjectGuid>
+    <ProjectGuid>{CDB25B8A-F0D9-48FE-2588-535C3FA81385}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Unity.Services.Core.Configuration.Editor</AssemblyName>
@@ -340,9 +340,6 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>Library/PackageCache/com.unity.nuget.newtonsoft-json@3.0.2/Runtime/Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NugetForUnity">
-      <HintPath>Assets/NuGet/Editor/NugetForUnity.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>Library/PackageCache/com.unity.ext.nunit@1.0.6/net35/unity-custom/nunit.framework.dll</HintPath>
@@ -725,31 +722,31 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Unity.Services.Core.csproj">
-      <Project>{3E211B93-4219-AB46-6615-E6158D3EAE59}</Project>
+      <Project>{D532EAB3-8058-11A0-3D07-C0209A7B75EA}</Project>
       <Name>Unity.Services.Core</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Services.Core.Configuration.csproj">
-      <Project>{28019F35-0FE3-44FC-8D8E-C09019C470B2}</Project>
+      <Project>{7E09F90E-5505-63C1-53B4-43FC4F723A90}</Project>
       <Name>Unity.Services.Core.Configuration</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.Services.Core.Internal.csproj">
-      <Project>{39D95A34-DF30-ABCD-561B-4385506ACFC0}</Project>
+      <Project>{400FA794-44AA-EDB1-1BEC-7B341D34A05E}</Project>
       <Name>Unity.Services.Core.Internal</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
-      <Project>{22B74EC5-FB2B-AE3C-E32B-87B99D8D22D8}</Project>
+      <Project>{D06C0A22-77E8-ED76-13C5-E31EF2B87B99}</Project>
       <Name>UnityEditor.UI</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEngine.UI.csproj">
-      <Project>{34385115-BCFE-F9D8-3FBE-F022F833387E}</Project>
+      <Project>{B57C12CC-60A9-F3E9-B980-C2601F85BE18}</Project>
       <Name>UnityEngine.UI</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEngine.TestRunner.csproj">
-      <Project>{C570A42D-8CAD-554D-C252-8481C7116296}</Project>
+      <Project>{4C373707-B73A-1AE2-EE07-049C549D7A7C}</Project>
       <Name>UnityEngine.TestRunner</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.TestRunner.csproj">
-      <Project>{D94D4823-C2F0-7CFF-3033-510774414FB0}</Project>
+      <Project>{E3C9641B-A268-AD48-582F-5087D04C060A}</Project>
       <Name>UnityEditor.TestRunner</Name>
     </ProjectReference>
   </ItemGroup>

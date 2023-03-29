@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{34385115-BCFE-F9D8-3FBE-F022F833387E}</ProjectGuid>
+    <ProjectGuid>{B57C12CC-60A9-F3E9-B980-C2601F85BE18}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>UnityEngine.UI</AssemblyName>
@@ -415,9 +415,6 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>Library/PackageCache/com.unity.nuget.newtonsoft-json@3.0.2/Runtime/Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NugetForUnity">
-      <HintPath>Assets/NuGet/Editor/NugetForUnity.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>/Applications/Unity/Hub/Editor/2021.3.15f1/Unity.app/Contents/NetStandard/ref/2.1.0/netstandard.dll</HintPath>

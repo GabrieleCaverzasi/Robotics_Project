@@ -13,7 +13,7 @@ public class RRTPathPlanner : MonoBehaviour
     public Transform goal;
     public float Curvature = 0.02618f; // K max (2.618*10^-2 mm^-1)
     public float diameter_chateter = 3.4f; //3.4 mm
-    public int maxIterations = 10000;
+    public int maxIterations = 100000;
     public float stepSize_chateter = 10f; //10 mm, distanza tra due "joint"
     private float RealToUnity = 0.735294f; //Questo parametro permette di convertire i valori reali in quelli della scena di unity
 
@@ -26,13 +26,9 @@ public class RRTPathPlanner : MonoBehaviour
     void Start()
     {
         Debug.Log("Avvio RRTPathPlanner");
-        Debug.Log("nodes = new List<Vector3>();");
         nodes = new List<Vector3>();
-        Debug.Log("edges = new List<int>();");
         edges = new List<int>();
-        Debug.Log("nodes.Add(start.position);");
         nodes.Add(start.position);
-        Debug.Log("lastSample = start.position;");
         lastSample = start.position;
     }
 
@@ -56,17 +52,16 @@ public class RRTPathPlanner : MonoBehaviour
     /*Il metod BuildRRT è il cuore dell'algoritmo RRT, che genera un albero di campionamento casuale e 
     * cerca di connettere il nodo più vicino a un nuovo campione valido.
     * Se il campione si connette con il nodo finale, viene creato un nuovo nodo finale e l'algoritmo termina.*/
-    void BuildRRT()
+
+    void BuildNewRTT()
     {
         Debug.Log("Metodo BuildRRT()");
         int i = 0;
-        while (i < maxIterations)
+        bool found = false;
+        do
         {
-            //Debug.Log("Chiama funzione GetRandomSample() e associa valore a sample");
             Vector3 sample = GetRandomSample();
-            //Debug.Log("Chiama funzione GetNearestNode(sample) e associa valore a nearest");
             int nearest = GetNearestNode(sample);
-            //Debug.Log("If chiama CheckEdge(nodes[nearest], sample), se sono entrambi true prosegue");
             if (CheckEdge(nodes[nearest], sample))
             {
                 int newNode = AddNode(sample);
@@ -76,6 +71,36 @@ public class RRTPathPlanner : MonoBehaviour
                 {
                     goalNode = AddNode(goal.position);
                     AddEdge(newNode, goalNode);
+                    Debug.Log("Punto Trovato");
+                    found = true;
+                }
+            }
+            i++;
+        }while (found == false || i<maxIterations);
+        Debug.Log("found = " + found);
+        Debug.Log("Numero iterazioni = " + i);
+    }
+
+    void BuildRRT()
+    {
+        Debug.Log("Metodo BuildRRT()");
+        int i = 0;
+
+        while (i < maxIterations)
+        {
+            Vector3 sample = GetRandomSample();
+            int nearest = GetNearestNode(sample);
+            if (CheckEdge(nodes[nearest], sample))
+            {
+                int newNode = AddNode(sample);
+                AddEdge(nearest, newNode);
+
+                if (CheckEdge(sample, goal.position))
+                {
+                    goalNode = AddNode(goal.position);
+                    AddEdge(newNode, goalNode);
+                    Debug.Log("Punto Trovato - Break");
+                    Debug.Log("Iterazioni necessarie = "+i);
                     break;
                 }
             }
@@ -84,9 +109,20 @@ public class RRTPathPlanner : MonoBehaviour
         if (i == maxIterations)
         {
             stop = true;
-            Debug.Log("STOP");
+            Debug.Log("STOP, MAX_ITERATIONS");
         }
     }
+    /* spiegazione BuildRRT() nel dettaglio
+     * La funzione utilizza un ciclo while che viene eseguito per un massimo di maxIterations volte. 
+     * Ad ogni iterazione, viene generato un punto casuale (sample) tramite la funzione GetRandomSample(). 
+     * Successivamente, viene cercato il nodo più vicino all'interno del grafo con la funzione GetNearestNode(sample).
+     * Se l'arco tra il nodo più vicino e il punto casuale rispetta le condizioni di curvatura e di collisione, viene 
+     * creato un nuovo nodo all'interno del grafo (AddNode(sample)) e l'arco viene creato tra il nodo più vicino e il nuovo nodo (AddEdge(nearest, newNode)). 
+     * Se l'arco appena creato raggiunge la posizione del goal (goal.position) rispettando le condizioni di curvatura e di collisione, 
+     * viene creato un nuovo nodo goal e viene creato un arco tra il nuovo nodo e il nodo goal.
+     * Il ciclo while termina quando viene raggiunto il goal o quando il numero massimo di iterazioni è stato raggiunto.
+     */
+
 
     /*Il metod GetRandomSample genera un campione casuale all'interno del diametro del robot, con una dimensione del passo specificata.*/
     Vector3 GetRandomSample()
@@ -364,8 +400,6 @@ public class RRTPathPlanner : MonoBehaviour
         }
         return angle / Vector3.Distance(a, c);
     }/*
-
-    /*Il metod CalculateCurvature2 calcola la curvatura tra tre punti*/
 
     /* Questa funzione prende in input un oggetto della scena e restituisce il volume all'interno del quale deve svilupparsi la ricerca del percorso ottimale dell'RRT
     Bounds GetSearchVolume(GameObject searchVolumeObject)

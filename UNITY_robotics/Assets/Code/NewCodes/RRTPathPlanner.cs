@@ -53,34 +53,6 @@ public class RRTPathPlanner : MonoBehaviour
     * cerca di connettere il nodo più vicino a un nuovo campione valido.
     * Se il campione si connette con il nodo finale, viene creato un nuovo nodo finale e l'algoritmo termina.*/
 
-    void BuildNewRTT()
-    {
-        Debug.Log("Metodo BuildRRT()");
-        int i = 0;
-        bool found = false;
-        do
-        {
-            Vector3 sample = GetRandomSample();
-            int nearest = GetNearestNode(sample);
-            if (CheckEdge(nodes[nearest], sample))
-            {
-                int newNode = AddNode(sample);
-                AddEdge(nearest, newNode);
-
-                if (CheckEdge(sample, goal.position))
-                {
-                    goalNode = AddNode(goal.position);
-                    AddEdge(newNode, goalNode);
-                    Debug.Log("Punto Trovato");
-                    found = true;
-                }
-            }
-            i++;
-        }while (found == false || i<maxIterations);
-        Debug.Log("found = " + found);
-        Debug.Log("Numero iterazioni = " + i);
-    }
-
     void BuildRRT()
     {
         Debug.Log("Metodo BuildRRT()");
@@ -169,11 +141,11 @@ public class RRTPathPlanner : MonoBehaviour
         // Itera su tutti i nodi nella lista dei nodi
         for (int i = 0; i < nodes.Count; i++)
         {
-            // Calcola la distanza tra il nodo corrente e il campione casuale utilizzando il metodo Vector3.Distance()
+            // Calcola la distanza tra il nodo corrente (nodes[i]) e il campione casuale (sample) utilizzando il metod Vector3.Distance()
             float distance = Vector3.Distance(nodes[i], sample);
 
-            // Se la distanza è minore della distanza minima finora registrata, aggiorna la variabile minDistance
-            // e la variabile nearest con l'indice del nodo corrente
+            // Se la distanza è minore della distanza minima finora registrata, aggiorna la variabile minDistance con distance trovata
+            // e la variabile nearest con l'indice "i" del nodo corrente
             if (distance < minDistance)
             {
                 minDistance = distance;
@@ -215,16 +187,16 @@ public class RRTPathPlanner : MonoBehaviour
             Vector3 point = start + direction * i;
 
             // Verifica se il punto rispetta le condizioni di curvatura
-            if (!CheckCurvature(point))
+            if (CheckCurvature(point))
             {
-                // Se il punto non rispetta le condizioni di curvatura, restituisce false
+                // Se il punto non rispetta le condizioni di curvatura, ovvero curvature>maxCurvature o distance < stepSize, restituisce false
                 return false;
             }
 
             // Verifica se il punto rispetta le condizioni di collisione
             if (CheckCollision(point))
             {
-                // Se il punto rispetta le condizioni di collisione, restituisce false
+                // Se il punto non rispetta le condizioni di collisione, ovvero c'è collisione, restituisce false
                 return false;
             }
         }
@@ -244,32 +216,41 @@ public class RRTPathPlanner : MonoBehaviour
 
 
     /*Il metod CheckCurvature calcola la curvatura tra tre punti e verifica se rientra nella curvatura massima consentita.*/
-    bool CheckCurvature(Vector3 point)
+    bool CheckCurvature(Vector3 point) // Funzione per controllare la curvatura in un punto
     {
+        // Calcolo la direzione dal nodo più vicino al punto in cui mi trovo al punto stesso
         Vector3 direction = point - nodes[GetNearestNode(point)];
+        // Calcolo la distanza tra il nodo più vicino e il punto in cui mi trovo
         float distance = direction.magnitude;
+        // Normalizzo la direzione
         direction.Normalize();
+        // Imposto la grandezza del passo come la dimensione massima di curvatura moltiplicata per il fattore di scala
         float stepSize = stepSize_chateter * RealToUnity;
-        if (distance < stepSize) //punto non coerente con le condizioni di curvatura
+        // Se la distanza tra il nodo più vicino e il punto è minore del passo, il punto non è coerente con le condizioni di curvatura
+        if (distance < stepSize)
         {
-            return true;
+            return true; // Esco dalla funzione con valore booleano true (???????????????????????????????????????????????????????????????????)
         }
 
+        // Altrimenti calcolo la curvatura tra i tre punti a, b, c
         for (float i = 0; i <= distance - stepSize; i += stepSize)
         {
-            //ottengo i tre punti per calcolare la curvatura
-            Vector3 a = nodes[GetNearestNode(point)];//i-1
+            // Ottengo i tre punti a, b, c
+            Vector3 a = nodes[GetNearestNode(point)]; //i-1
             Vector3 b = a + direction * i;
             Vector3 c = a + direction * (i + stepSize);
 
-            float curvature = CalculateCurvature2(a, b, c); //richiamo il calcolo della curvatura
+            // Calcolo la curvatura tra i tre punti
+            float curvature = CalculateCurvature2(a, b, c);
+            // Imposto il valore massimo di curvatura moltiplicato per il fattore di scala
             float maxCurvature = Curvature * RealToUnity;
+            // Se la curvatura calcolata è maggiore della massima curvatura ammessa, esco dalla funzione con valore booleano true
             if (curvature > maxCurvature)
             {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false; // Se ho controllato tutti i passi e la curvatura è coerente con le condizioni, esco dalla funzione con valore booleano false
     }
     /* Passaggi CheckCurvature() nel dettaglio:
      * La funzione inizia calcolando la direzione dal punto dato point al nodo più vicino sulla traiettoria nodes[GetNearestNode(point)].
@@ -320,14 +301,7 @@ public class RRTPathPlanner : MonoBehaviour
      * Vengono calcolate le coordinate del centro del cerchio, sommando al punto medio di AB il prodotto tra il vettore normale al piano e la distanza calcolata al passaggio precedente.
      * Viene calcolata la distanza tra il centro del cerchio e uno dei punti, che rappresenta il raggio.
      * Infine, viene calcolata la curvatura k come l'inverso del raggio.
-    /*
-
-
-    /*Metod CheckCollision: il codice esegue un raycast verso l'alto dal punto 
-     * specificato, con una lunghezza di 0.2 unità. Se il raycast interseca il 
-     * MeshCollider, significa che il punto si trova all'interno dell'oggetto 
-     * ostacolo e la funzione restituisce true. 
-     * Altrimenti, non c'è stata collisione e la funzione restituisce false.*/
+    */
 
 
     bool CheckCollision(Vector3 point)
@@ -348,6 +322,13 @@ public class RRTPathPlanner : MonoBehaviour
         }
         return false; // Nessuna collisione trovata
     }
+    /* Spiegazione CheckCollision() nel dettaglio:
+     * il codice esegue un raycast verso l'alto dal punto 
+     * specificato, con una lunghezza di 0.2 unità. Se il raycast interseca il 
+     * MeshCollider, significa che il punto si trova all'interno dell'oggetto 
+     * ostacolo e la funzione restituisce true. 
+     * Altrimenti, non c'è stata collisione e la funzione restituisce false.
+    */
 
 
     // Aggunge un nuovo nodo alla lista nodes

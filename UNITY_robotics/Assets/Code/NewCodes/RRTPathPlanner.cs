@@ -11,16 +11,17 @@ public class RRTPathPlanner : MonoBehaviour
 {
     public Transform start;
     public Transform goal;
-    public float maxCurvature = 0.02618f; // K max (2.618*10^-2 mm^-1)
-    public float r_curvature = 38.197f; //raggio di curvatura
-    public float diameter = 3.4f; //3.4 mm
-    public float stepSize = 0.1f; //0.1 mm, distanza tra due "joint"
+    public float Curvature = 0.02618f; // K max (2.618*10^-2 mm^-1)
+    public float diameter_chateter = 3.4f; //3.4 mm
     public int maxIterations = 10000;
+    public float stepSize_chateter = 10f; //10 mm, distanza tra due "joint"
+    private float RealToUnity = 0.735294f; //Questo parametro permette di convertire i valori reali in quelli della scena di unity
 
     private List<Vector3> nodes;
     private List<int> edges;
     private Vector3 lastSample;
     private int goalNode;
+    private bool stop = false; 
 
     void Start()
     {
@@ -41,10 +42,15 @@ public class RRTPathPlanner : MonoBehaviour
         {
             Debug.Log("chiama BuildRRT();");
             BuildRRT();
-            
         }
+
         Debug.Log("chiama DrawRRT()");
         DrawRRT();
+
+        if (stop)
+        {
+            Application.Quit();
+        }
     }
 
     /*Il metod BuildRRT è il cuore dell'algoritmo RRT, che genera un albero di campionamento casuale e 
@@ -75,6 +81,11 @@ public class RRTPathPlanner : MonoBehaviour
             }
             i++;
         }
+        if (i == maxIterations)
+        {
+            stop = true;
+            Debug.Log("STOP");
+        }
     }
 
     /*Il metod GetRandomSample genera un campione casuale all'interno del diametro del robot, con una dimensione del passo specificata.*/
@@ -82,7 +93,7 @@ public class RRTPathPlanner : MonoBehaviour
     {
         // Dichiarazione di una variabile di tipo Vector3 per il campione casuale
         Vector3 sample;
-
+        float diameter = diameter_chateter * RealToUnity; 
         // Genera tre valori casuali per le coordinate x, y e z del punto, rispettivamente
         float x = Random.Range(-diameter / 2f, diameter / 2f);
         float y = Random.Range(-diameter / 2f, diameter / 2f);
@@ -90,6 +101,7 @@ public class RRTPathPlanner : MonoBehaviour
 
         // Calcola le coordinate del punto aggiungendo al campione precedente (lastSample) un nuovo vettore che ha
         // come componenti i valori casuali generati moltiplicati per la dimensione dello step (stepSize)
+        float stepSize = stepSize_chateter * RealToUnity; 
         sample = lastSample + new Vector3(x, y, z) * stepSize;
 
         // Aggiorna la variabile lastSample con le coordinate del campione appena generato
@@ -160,6 +172,7 @@ public class RRTPathPlanner : MonoBehaviour
         direction.Normalize();
 
         // Itera lungo l'edge con passi di dimensione stepSize
+        float stepSize = stepSize_chateter * RealToUnity; 
         for (float i = 0; i <= distance; i += stepSize)
         {
             // Calcola il punto corrispondente all'i-esimo passo lungo l'edge
@@ -194,16 +207,13 @@ public class RRTPathPlanner : MonoBehaviour
      /*
 
 
-
     /*Il metod CheckCurvature calcola la curvatura tra tre punti e verifica se rientra nella curvatura massima consentita.*/
-
-
     bool CheckCurvature(Vector3 point)
     {
         Vector3 direction = point - nodes[GetNearestNode(point)];
         float distance = direction.magnitude;
         direction.Normalize();
-
+        float stepSize = stepSize_chateter * RealToUnity;
         if (distance < stepSize) //punto non coerente con le condizioni di curvatura
         {
             return true;
@@ -217,7 +227,7 @@ public class RRTPathPlanner : MonoBehaviour
             Vector3 c = a + direction * (i + stepSize);
 
             float curvature = CalculateCurvature2(a, b, c); //richiamo il calcolo della curvatura
-
+            float maxCurvature = Curvature * RealToUnity;
             if (curvature > maxCurvature)
             {
                 return false;

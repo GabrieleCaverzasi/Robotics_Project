@@ -1832,10 +1832,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   start: {fileID: 968936621}
   goal: {fileID: 481233848}
-  maxCurvature: 0.01925
-  diameter: 2.5
-  stepSize: 10
+  Curvature: 0.02618
+  diameter_chateter: 3.4
   maxIterations: 100000
+  stepSize_chateter: 20
 --- !u!1 &1002256200
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,0 +1,14 @@
+﻿<Properties StartupConfiguration="{EE634F48-D1D8-DEDB-8C04-3AEDB09384B4}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Code/NewCodes/RRTPathPlanner.cs">
+    <Files>
+      <File FileName="Assets/Code/NewCodes/RRTPathPlanner.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="f94f2bfc-b201-47f8-bd05-55c785dd9e6d" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

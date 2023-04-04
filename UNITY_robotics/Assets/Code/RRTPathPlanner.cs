@@ -206,14 +206,14 @@ public class RRTPathPlanner : MonoBehaviour
     }
     /*Passaggi CheckEdge() nel dettaglio:
      * Vector3 direction = end - start; - Calcolo della direzione dell'edge, che corrisponde alla differenza tra il nodo di partenza start e il nodo di arrivo end.
-     * float distance = direction.magnitude; - Calcolo della lunghezza dell'edge, utilizzando il metodo magnitude() che restituisce la lunghezza del vettore direction.
-     * direction.Normalize(); - Normalizzazione della direzione dell'edge, utilizzando il metodo Normalize() che restituisce un vettore della stessa direzione ma di lunghezza unitaria.
+     * float distance = direction.magnitude; - Calcolo della lunghezza dell'edge, utilizzando il metod magnitude() che restituisce la lunghezza del vettore direction.
+     * direction.Normalize(); - Normalizzazione della direzione dell'edge, utilizzando il metod Normalize() che restituisce un vettore della stessa direzione ma di lunghezza unitaria.
      * for (float i = 0; i <= distance; i += stepSize) - Ciclo che itera lungo l'edge con passi di dimensione stepSize, partendo dal nodo di partenza start e arrivando al nodo di arrivo end.
      * Vector3 point = start + direction * i; - Calcolo del punto corrispondente all'i-esimo passo lungo l'edge, utilizzando la formula punto = puntoIniziale + direzione * passo.
      * if (!CheckCurvature(point)) - Verifica se il punto corrente rispetta le condizioni di curvatura, utilizzando la funzione CheckCurvature() che restituisce true se il punto rispetta le condizioni di curvatura, false altrimenti.
      * return false; - Se il punto corrente non rispetta le condizioni di curvatura, restituisce false, indicando che l'edge non rispetta le condizioni di curvatura.
      * if (CheckCollision(point)) - Verifica se il punto corrente rispetta le condizioni di collisione, utilizzando la funzione CheckCollision() 
-     /*
+    /*
 
 
     /*Il metod CheckCurvature calcola la curvatura tra tre punti e verifica se rientra nella curvatura massima consentita.*/
@@ -257,9 +257,10 @@ public class RRTPathPlanner : MonoBehaviour
      * La funzione inizia calcolando la direzione dal punto dato point al nodo più vicino sulla traiettoria nodes[GetNearestNode(point)].
      * Viene quindi calcolata la distanza distance tra il punto point e il nodo più vicino, e normalizza la direzione.
      * Viene effettuato un controllo: se la distanza tra il punto e il nodo più vicino è minore dello stepSize (che rappresenta la lunghezza di ogni segmento di percorso), la funzione restituisce true.
-     * Se la distanza è maggiore dello stepSize, la funzione procede con un ciclo for che scorre i segmenti del percorso tra il nodo più vicino e il punto dato point. In ogni iterazione viene calcolata la curvatura del segmento di percorso che passa attraverso i tre punti corrispondenti ai nodi precedente (i-1), corrente (i), e successivo (i+1) al punto point.
-     * Se la curvatura supera la curvatura massima consentita maxCurvature, la funzione restituisce false.
-     * Se la funzione arriva alla fine del ciclo for senza restituire false, il punto soddisfa le condizioni di curvatura e la funzione restituisce true.
+     * Se la distanza è maggiore dello stepSize, la funzione procede con un ciclo for che scorre i segmenti del percorso tra il nodo più vicino e il punto dato point. 
+     * In ogni iterazione viene calcolata la curvatura del segmento di percorso che passa attraverso i tre punti corrispondenti ai nodi precedente (i-1), corrente (i), e successivo (i+1) al punto point.
+     * Se la curvatura supera la curvatura massima consentita maxCurvature, la funzione restituisce true.
+     * Se la funzione arriva alla fine del ciclo for senza restituire true, il punto soddisfa le condizioni di curvatura e la funzione restituisce false.
     */
 
 

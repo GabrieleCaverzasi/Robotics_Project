@@ -56,25 +56,24 @@
     <Analyzer Include="/Applications/Visual Studio.app/Contents/Resources/lib/monodevelop/AddIns/MonoDevelop.Unity/Analyzers/Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets/Code/RRT/RRTStrategies/RRTStarInformedPruningEllipse.cs" />
-    <Compile Include="Assets/Code/RRT/RRTStrategies/RRTStarInformed.cs" />
-    <Compile Include="Assets/Code/RRT/RRTStrategies/RRTInformedPlanarWithReduction.cs" />
-    <Compile Include="Assets/Code/NewBehaviourScript.cs" />
-    <Compile Include="Assets/Code/RRT/RRTStrategies/RRTSearchStrategy.cs" />
-    <Compile Include="Assets/Code/Cylinder/interpolatePosition.cs" />
-    <Compile Include="Assets/Code/RRT/RRTStrategies/RRTStarInformedPruning.cs" />
-    <Compile Include="Assets/Code/Cylinder/AnimationCurveExample.cs" />
-    <Compile Include="Assets/Code/RRT/RRT.cs" />
-    <Compile Include="Assets/Code/RRT/Node.cs" />
-    <Compile Include="Assets/Code/RRT/RRTStrategies/RRTInformedPlanar.cs" />
-    <Compile Include="Assets/Code/RRT/Tree.cs" />
-    <Compile Include="Assets/Code/RRT/RRTConfig.cs" />
-    <Compile Include="Assets/Code/RRT/RRTStrategies/RRTInformed.cs" />
-    <Compile Include="Assets/Code/RRT/RRTStrategies/RRTBasic.cs" />
-    <Compile Include="Assets/Code/Cylinder/startEndPose.cs" />
-    <Compile Include="Assets/Code/RRT/RRTStrategies/RRTInformedWithReduction.cs" />
-    <Compile Include="Assets/Code/Cylinder/objectControl.cs" />
-    <Compile Include="Assets/Code/RRT/RRTStrategies/RRTStar.cs" />
+    <Compile Include="Assets/Code/Altri codici/RRT/RRTStrategies/RRTStarInformedPruningEllipse.cs" />
+    <Compile Include="Assets/Code/Altri codici/RRT/RRTStrategies/RRTStarInformed.cs" />
+    <Compile Include="Assets/Code/Altri codici/RRT/RRTStrategies/RRTInformedPlanarWithReduction.cs" />
+    <Compile Include="Assets/Code/Altri codici/RRT/RRTStrategies/RRTSearchStrategy.cs" />
+    <Compile Include="Assets/Code/Altri codici/Cylinder/interpolatePosition.cs" />
+    <Compile Include="Assets/Code/Altri codici/RRT/RRTStrategies/RRTStarInformedPruning.cs" />
+    <Compile Include="Assets/Code/Altri codici/Cylinder/AnimationCurveExample.cs" />
+    <Compile Include="Assets/Code/Altri codici/RRT/RRT.cs" />
+    <Compile Include="Assets/Code/Altri codici/RRT/Node.cs" />
+    <Compile Include="Assets/Code/Altri codici/RRT/RRTStrategies/RRTInformedPlanar.cs" />
+    <Compile Include="Assets/Code/Altri codici/RRT/Tree.cs" />
+    <Compile Include="Assets/Code/Altri codici/RRT/RRTConfig.cs" />
+    <Compile Include="Assets/Code/Altri codici/RRT/RRTStrategies/RRTInformed.cs" />
+    <Compile Include="Assets/Code/Altri codici/RRT/RRTStrategies/RRTBasic.cs" />
+    <Compile Include="Assets/Code/Altri codici/Cylinder/startEndPose.cs" />
+    <Compile Include="Assets/Code/Altri codici/RRT/RRTStrategies/RRTInformedWithReduction.cs" />
+    <Compile Include="Assets/Code/Altri codici/Cylinder/objectControl.cs" />
+    <Compile Include="Assets/Code/Altri codici/RRT/RRTStrategies/RRTStar.cs" />
     <Compile Include="Assets/Code/RRTPathPlanner.cs" />
   </ItemGroup>
   <ItemGroup>

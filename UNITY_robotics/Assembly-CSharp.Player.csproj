@@ -69,13 +69,13 @@
     <Compile Include="Assets/Code/RRT/RRTStrategies/RRTInformedPlanar.cs" />
     <Compile Include="Assets/Code/RRT/Tree.cs" />
     <Compile Include="Assets/Code/RRT/RRTConfig.cs" />
-    <Compile Include="Assets/Code/NewCodes/RRTPathPlanner.cs" />
     <Compile Include="Assets/Code/RRT/RRTStrategies/RRTInformed.cs" />
     <Compile Include="Assets/Code/RRT/RRTStrategies/RRTBasic.cs" />
     <Compile Include="Assets/Code/Cylinder/startEndPose.cs" />
     <Compile Include="Assets/Code/RRT/RRTStrategies/RRTInformedWithReduction.cs" />
     <Compile Include="Assets/Code/Cylinder/objectControl.cs" />
     <Compile Include="Assets/Code/RRT/RRTStrategies/RRTStar.cs" />
+    <Compile Include="Assets/Code/RRTPathPlanner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/Packages/MathNet.Numerics.5.0.0/lib/netstandard2.0/MathNet.Numerics.xml" />

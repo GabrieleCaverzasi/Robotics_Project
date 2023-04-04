@@ -344,7 +344,6 @@
 "Assets/Code/Cylinder/objectControl.cs"
 "Assets/Code/Cylinder/startEndPose.cs"
 "Assets/Code/NewBehaviourScript.cs"
-"Assets/Code/NewCodes/RRTPathPlanner.cs"
 "Assets/Code/RRT/Node.cs"
 "Assets/Code/RRT/RRT.cs"
 "Assets/Code/RRT/RRTConfig.cs"
@@ -359,6 +358,7 @@
 "Assets/Code/RRT/RRTStrategies/RRTStarInformedPruning.cs"
 "Assets/Code/RRT/RRTStrategies/RRTStarInformedPruningEllipse.cs"
 "Assets/Code/RRT/Tree.cs"
+"Assets/Code/RRTPathPlanner.cs"
 -langversion:9.0
 
 /deterministic

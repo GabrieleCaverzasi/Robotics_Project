@@ -49,6 +49,7 @@ public class RRTPathPlanner : MonoBehaviour
         }
     }
 
+
     /*Il metod BuildRRT è il cuore dell'algoritmo RRT, che genera un albero di campionamento casuale e 
     * cerca di connettere il nodo più vicino a un nuovo campione valido.
     * Se il campione si connette con il nodo finale, viene creato un nuovo nodo finale e l'algoritmo termina.*/

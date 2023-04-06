@@ -1834,7 +1834,7 @@ MonoBehaviour:
   goal: {fileID: 481233848}
   Curvature: 0.02618
   diameter_chateter: 3.4
-  maxIterations: 100000
+  maxIterations: 1000
   stepSize_chateter: 15
 --- !u!1 &1002256200
 GameObject:
@@ -2957,7 +2957,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 31f52fe5e2a723b40883be4a47706232, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 31f52fe5e2a723b40883be4a47706232, type: 3}
       propertyPath: m_TagString

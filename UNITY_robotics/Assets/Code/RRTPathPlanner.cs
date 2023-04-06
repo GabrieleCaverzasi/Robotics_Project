@@ -89,19 +89,19 @@ public class RRTPathPlanner : MonoBehaviour
 
         while (i < maxIterations)
         {
-            Vector3 sample = GetRandomSample();
-            int nearest = GetNearestNode(sample);
+            Vector3 sample = GetRandomSample(); //viene generato un punto casuale (sample)
+            int nearest = GetNearestNode(sample); //viene cercato il nodo più vicino all'interno del grafo
             if (CheckEdge(nodes[nearest], sample))
             {
                 int newNode = AddNode(sample);
                 AddEdge(nearest, newNode);
+                
 
                 if (CheckEdge(sample, goal.position))
                 {
                     goalNode = AddNode(goal.position);
                     AddEdge(newNode, goalNode);
-                    Debug.Log("Punto Trovato - Break");
-                    Debug.Log("Iterazioni necessarie = "+i);
+                    Debug.Log("Punto Trovato (Break), Iterazioni necessarie = " + i);
                     break;
                 }
             }
@@ -223,7 +223,7 @@ public class RRTPathPlanner : MonoBehaviour
             }
 
             // Verifica se il punto rispetta le condizioni di collisione
-            if (CheckCollision(point))
+            if (CheckForObstacle(start, end))
             {
                 // Se il punto rispetta le condizioni di collisione, restituisce false
                 return false;
@@ -322,34 +322,53 @@ public class RRTPathPlanner : MonoBehaviour
      * Vengono calcolate le coordinate del centro del cerchio, sommando al punto medio di AB il prodotto tra il vettore normale al piano e la distanza calcolata al passaggio precedente.
      * Viene calcolata la distanza tra il centro del cerchio e uno dei punti, che rappresenta il raggio.
      * Infine, viene calcolata la curvatura k come l'inverso del raggio.
-    /*
+    */
 
 
-    /*Metod CheckCollision: il codice esegue un raycast verso l'alto dal punto 
-     * specificato, con una lunghezza di 0.2 unità. Se il raycast interseca il 
-     * MeshCollider, significa che il punto si trova all'interno dell'oggetto 
-     * ostacolo e la funzione restituisce true. 
-     * Altrimenti, non c'è stata collisione e la funzione restituisce false.*/
-
-
-    bool CheckCollision(Vector3 point)
+    bool CheckForObstacle(Vector3 start, Vector3 end)
     {
-        // Crea un raycast che parte dalla posizione del robot e punta verso il punto campionato
-        Vector3 direction = point - transform.position;
-        Ray ray = new Ray(transform.position, direction);
-        RaycastHit hit;
+        // Cerca tutti gli oggetti con il tag "Obstacle" nella scena Unity
+        GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
 
-        // Verifica se il raycast interseca un oggetto con MeshCollider
-        if (Physics.Raycast(ray, out hit, direction.magnitude))
+        foreach (GameObject obstacle in obstacles)
         {
-            MeshCollider meshCollider = hit.collider.GetComponent<MeshCollider>();
-            if (meshCollider != null)
+            // Se l'oggetto è un collider, controlla se la retta che collega i due punti interseca il collider
+            Collider collider = obstacle.GetComponent<Collider>();
+            if (collider != null)
             {
-                return true; // Collisione trovata
+                RaycastHit hit;
+                if (Physics.Linecast(start, end, out hit))
+                {
+                    if (hit.collider == collider)
+                    {
+                        // La retta interseca il collider, quindi attraversa un ostacolo
+                        Debug.Log("COLLISIONE");
+                        return true;
+                    }
+                }
             }
         }
-        return false; // Nessuna collisione trovata
+        // La retta non interseca alcun ostacolo
+        Debug.Log("NO COLLISIONE");
+        return false;
     }
+    /* Passaggi CheckForObstacle) nel dettaglio
+     * La funzione CheckForObstacle prende come argomenti due punti nello spazio 3D, 
+     * start e end, e restituisce un valore booleano che indica se la retta che collega 
+     * i due punti interseca un oggetto nella scena Unity con il tag "Obstacle".
+     * Per cercare tutti gli oggetti con il tag "Obstacle" nella scena Unity, 
+     * la funzione utilizza la funzione GameObject.FindGameObjectsWithTag, 
+     * che restituisce un array di tutti gli oggetti con il tag specificato.
+     * Per ogni oggetto trovato con il tag "Obstacle", la funzione controlla 
+     * se l'oggetto ha un collider associato. In caso affermativo, 
+     * la funzione utilizza la funzione Physics.Linecast per controllare 
+     * se la retta che collega i due punti interseca il collider dell'oggetto.
+     * Se la retta interseca il collider, la funzione restituisce true, 
+     * altrimenti continua a cercare tra gli altri oggetti con il tag "Obstacle". 
+     * Se la funzione non trova alcun oggetto con il tag "Obstacle" che 
+     * interseca la retta, restituisce false.
+    */
+
 
 
     // Aggunge un nuovo nodo alla lista nodes

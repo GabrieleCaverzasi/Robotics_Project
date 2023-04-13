@@ -13,7 +13,7 @@ public class RRTPathPlanner : MonoBehaviour
     public Transform goal;
     public float Curvature = 0.02618f; // K max (2.618*10^-2 mm^-1)
     public float diameter_chateter = 3.4f; //3.4 mm
-    public int maxIterations = 100000;
+    public int maxIterations = 100;
     public float stepSize_chateter = 10f; //10 mm, distanza tra due "joint"
     private float RealToUnity = 0.735294f; //Questo parametro permette di convertire i valori reali in quelli della scena di unity
 
@@ -62,18 +62,20 @@ public class RRTPathPlanner : MonoBehaviour
         do
         {
             Vector3 sample = GetRandomSample();
-            int nearest = GetNearestNode(sample);
-            if (CheckEdge(nodes[nearest], sample))
-            {
-                int newNode = AddNode(sample);
-                AddEdge(nearest, newNode);
-
-                if (CheckEdge(sample, goal.position))
+            if(CheckRandomSample(sample)){
+                int nearest = GetNearestNode(sample);
+                if (CheckEdge(nodes[nearest], sample))
                 {
-                    goalNode = AddNode(goal.position);
-                    AddEdge(newNode, goalNode);
-                    Debug.Log("Punto Trovato");
-                    found = true;
+                    int newNode = AddNode(sample);
+                    AddEdge(nearest, newNode);
+
+                    if (CheckEdge(sample, goal.position))
+                    {
+                        goalNode = AddNode(goal.position);
+                        AddEdge(newNode, goalNode);
+                        Debug.Log("Punto Trovato");
+                        found = true;
+                    }
                 }
             }
             i++;
@@ -96,7 +98,6 @@ public class RRTPathPlanner : MonoBehaviour
                 int newNode = AddNode(sample);
                 AddEdge(nearest, newNode);
                 
-
                 if (CheckEdge(sample, goal.position))
                 {
                     goalNode = AddNode(goal.position);
@@ -142,7 +143,7 @@ public class RRTPathPlanner : MonoBehaviour
         sample = lastSample + new Vector3(x, y, z) * stepSize;
 
         // Aggiorna la variabile lastSample con le coordinate del campione appena generato
-        lastSample = sample;
+        //lastSample = sample;
 
         // Restituisce il campione casuale come risultato della funzione
         return sample;
@@ -224,13 +225,19 @@ public class RRTPathPlanner : MonoBehaviour
 
         return sample;
     }
-    /*La funzione calcola la massima distanza ammissibile dal goal come la 
-     * distanza tra l'ultimo campione generato (lastSample) e il goal stesso. 
-     * Utilizzando un ciclo do-while, la funzione genera ripetutamente nuovi 
-     * campioni casuali finché la distanza dal goal del campione appena generato 
-     * non rispetta il vincolo imposto. Infine, la funzione restituisce il 
-     * campione generato come risultato e aggiorna la variabile lastSample.
-     */
+
+
+    bool CheckRandomSample(Vector3 sample) //funzione che controlla se ci stiamo avvicinando al gol
+    {
+        float maxDistance = Vector3.Distance(goal.position, lastSample);
+        if(Vector3.Distance(goal.position, sample) > maxDistance)
+        {
+            return false;
+        }
+        // Aggiorna la variabile lastSample con le coordinate del campione generato validato
+        lastSample = sample;
+        return true;
+    }
 
 
     /*Il metod GetNearestNode trova il nodo più vicino al campione casuale.*/

@@ -89,7 +89,7 @@ public class RRTPathPlanner : MonoBehaviour
 
         while (i < maxIterations)
         {
-            Vector3 sample = GetRandomSample(); //viene generato un punto casuale (sample)
+            Vector3 sample = GetRandomSample_variation(); //viene generato un punto casuale (sample)
             int nearest = GetNearestNode(sample); //viene cercato il nodo più vicino all'interno del grafo
             if (CheckEdge(nodes[nearest], sample))
             {
@@ -156,6 +156,53 @@ public class RRTPathPlanner : MonoBehaviour
      * lastSample = sample; - Aggiorna la variabile lastSample con le coordinate del campione appena generato, in modo che il prossimo campione possa essere generato a partire da questa posizione.
      * return sample; - Restituisce il campione casuale come risultato della funzione.
     */
+
+    Vector3 GetRandomSample_variation() //variazione della funzione, aggiungendo il fatto che i nodi si devono avvicinare al goal
+    {
+        // Dichiarazione di una variabile di tipo Vector3 per il campione casuale
+        Vector3 sample;
+        float diameter = diameter_chateter * RealToUnity;
+
+        // Calcola la distanza tra lastSample e il goal
+        float distanceToGoal = Vector3.Distance(lastSample, goal.position);
+
+        // Genera tre valori casuali per le coordinate x, y e z del punto, rispettivamente
+        float x = Random.Range(-diameter / 2f, diameter / 2f);
+        float y = Random.Range(-diameter / 2f, diameter / 2f);
+        float z = Random.Range(-diameter / 2f, diameter / 2f);
+
+        // Calcola le coordinate del punto aggiungendo al campione precedente (lastSample) un nuovo vettore che ha
+        // come componenti i valori casuali generati moltiplicati per la dimensione dello step (stepSize)
+        float stepSize = stepSize_chateter * RealToUnity;
+        sample = lastSample + new Vector3(x, y, z) * stepSize;
+
+        // Calcola la distanza tra il campione casuale e il goal
+        float distanceToSample = Vector3.Distance(sample, goal.position);
+
+        do
+        {
+            // Genera tre valori casuali per le coordinate x, y e z del punto, rispettivamente
+            x = Random.Range(-diameter / 2f, diameter / 2f);
+            y = Random.Range(-diameter / 2f, diameter / 2f);
+            z = Random.Range(-diameter / 2f, diameter / 2f);
+
+            // Calcola le coordinate del punto aggiungendo al campione precedente (lastSample) un nuovo vettore che ha
+            // come componenti i valori casuali generati moltiplicati per la dimensione dello step (stepSize)
+            stepSize = stepSize_chateter * RealToUnity;
+            sample = lastSample + new Vector3(x, y, z) * stepSize;
+
+            // Calcola la distanza tra il campione casuale e il goal
+            distanceToSample = Vector3.Distance(sample, goal.position);
+
+            // Continua a generare campioni casuali fino a quando non se ne trova uno che ha una distanza minore dal goal rispetto a lastSample
+        } while (distanceToSample >= distanceToGoal);
+
+        // Aggiorna la variabile lastSample con le coordinate del campione appena generato
+        lastSample = sample;
+
+        // Restituisce il campione casuale come risultato della funzione
+        return sample;
+    }
 
 
     /*Il metod GetNearestNode trova il nodo più vicino al campione casuale.*/

@@ -957,6 +957,7 @@ GameObject:
   - component: {fileID: 481233847}
   - component: {fileID: 481233846}
   - component: {fileID: 481233845}
+  - component: {fileID: 481233849}
   m_Layer: 0
   m_Name: target - PRE
   m_TagString: Untagged
@@ -1042,6 +1043,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &481233849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 481233844}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35012f5b2f5884655a186d6b5fd87fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  start: {fileID: 481233848}
+  goal: {fileID: 968936621}
+  Curvature: 0.02618
+  diameter_chateter: 3.4
+  maxIterations: 100000
+  stepSize_chateter: 15
 --- !u!1 &510844407
 GameObject:
   m_ObjectHideFlags: 0
@@ -1834,7 +1853,7 @@ MonoBehaviour:
   goal: {fileID: 481233848}
   Curvature: 0.02618
   diameter_chateter: 3.4
-  maxIterations: 1000
+  maxIterations: 100000
   stepSize_chateter: 15
 --- !u!1 &1002256200
 GameObject:

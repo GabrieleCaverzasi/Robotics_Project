@@ -89,7 +89,7 @@ public class RRTPathPlanner : MonoBehaviour
 
         while (i < maxIterations)
         {
-            Vector3 sample = GetRandomSample_variation(); //viene generato un punto casuale (sample)
+            Vector3 sample = GetRandomSample_var2(); //viene generato un punto casuale (sample)
             int nearest = GetNearestNode(sample); //viene cercato il nodo più vicino all'interno del grafo
             if (CheckEdge(nodes[nearest], sample))
             {
@@ -157,7 +157,7 @@ public class RRTPathPlanner : MonoBehaviour
      * return sample; - Restituisce il campione casuale come risultato della funzione.
     */
 
-    Vector3 GetRandomSample_variation() //variazione della funzione, aggiungendo il fatto che i nodi si devono avvicinare al goal
+    Vector3 GetRandomSample_var1() //variazione della funzione, aggiungendo il fatto che i nodi si devono avvicinare al goal
     {
         // Dichiarazione di una variabile di tipo Vector3 per il campione casuale
         Vector3 sample;
@@ -203,6 +203,34 @@ public class RRTPathPlanner : MonoBehaviour
         // Restituisce il campione casuale come risultato della funzione
         return sample;
     }
+
+    Vector3 GetRandomSample_var2() 
+    {
+        Vector3 sample;
+        float diameter = diameter_chateter * RealToUnity;
+        float stepSize = stepSize_chateter * RealToUnity;
+        float maxDistance = Vector3.Distance(goal.position, lastSample);
+
+        do
+        {
+            float x = Random.Range(-diameter / 2f, diameter / 2f);
+            float y = Random.Range(-diameter / 2f, diameter / 2f);
+            float z = Random.Range(-diameter / 2f, diameter / 2f);
+
+            sample = lastSample + new Vector3(x, y, z) * stepSize;
+        } while (Vector3.Distance(goal.position, sample) > maxDistance);
+
+        lastSample = sample;
+
+        return sample;
+    }
+    /*La funzione calcola la massima distanza ammissibile dal goal come la 
+     * distanza tra l'ultimo campione generato (lastSample) e il goal stesso. 
+     * Utilizzando un ciclo do-while, la funzione genera ripetutamente nuovi 
+     * campioni casuali finché la distanza dal goal del campione appena generato 
+     * non rispetta il vincolo imposto. Infine, la funzione restituisce il 
+     * campione generato come risultato e aggiorna la variabile lastSample.
+     */
 
 
     /*Il metod GetNearestNode trova il nodo più vicino al campione casuale.*/

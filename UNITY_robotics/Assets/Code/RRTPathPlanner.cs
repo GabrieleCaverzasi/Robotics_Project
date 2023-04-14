@@ -73,7 +73,7 @@ public class RRTPathPlanner : MonoBehaviour
                     {
                         goalNode = AddNode(goal.position);
                         AddEdge(newNode, goalNode);
-                        Debug.Log("Punto Trovato");
+                        //Debug.Log("Punto Trovato");
                         found = true;
                     }
                 }
@@ -91,19 +91,22 @@ public class RRTPathPlanner : MonoBehaviour
 
         while (i < maxIterations)
         {
-            Vector3 sample = GetRandomSample_var2(); //viene generato un punto casuale (sample)
-            int nearest = GetNearestNode(sample); //viene cercato il nodo più vicino all'interno del grafo
-            if (CheckEdge(nodes[nearest], sample))
+            Vector3 sample = GetRandomSample(); //viene generato un punto casuale (sample)
+            if (CheckRandomSample(sample))
             {
-                int newNode = AddNode(sample);
-                AddEdge(nearest, newNode);
-                
-                if (CheckEdge(sample, goal.position))
+                int nearest = GetNearestNode(sample); //viene cercato il nodo più vicino all'interno del grafo
+                if (CheckEdge(nodes[nearest], sample))
                 {
-                    goalNode = AddNode(goal.position);
-                    AddEdge(newNode, goalNode);
-                    Debug.Log("Punto Trovato (Break), Iterazioni necessarie = " + i);
-                    break;
+                    int newNode = AddNode(sample);
+                    AddEdge(nearest, newNode);
+
+                    if (CheckEdge(sample, goal.position))
+                    {
+                        goalNode = AddNode(goal.position);
+                        AddEdge(newNode, goalNode);
+                        Debug.Log("Punto Trovato (Break), Iterazioni necessarie = " + i);
+                        break;
+                    }
                 }
             }
             i++;
@@ -158,7 +161,8 @@ public class RRTPathPlanner : MonoBehaviour
      * return sample; - Restituisce il campione casuale come risultato della funzione.
     */
 
-    Vector3 GetRandomSample_var1() //variazione della funzione, aggiungendo il fatto che i nodi si devono avvicinare al goal
+    //variazione della funzione, aggiungendo il fatto che i nodi si devono avvicinare al goal
+    Vector3 GetRandomSample_var1() 
     {
         // Dichiarazione di una variabile di tipo Vector3 per il campione casuale
         Vector3 sample;
@@ -204,7 +208,6 @@ public class RRTPathPlanner : MonoBehaviour
         // Restituisce il campione casuale come risultato della funzione
         return sample;
     }
-
     Vector3 GetRandomSample_var2() 
     {
         Vector3 sample;
@@ -424,14 +427,12 @@ public class RRTPathPlanner : MonoBehaviour
                     if (hit.collider == collider)
                     {
                         // La retta interseca il collider, quindi attraversa un ostacolo
-                        Debug.Log("COLLISIONE");
                         return true;
                     }
                 }
             }
         }
         // La retta non interseca alcun ostacolo
-        Debug.Log("NO COLLISIONE");
         return false;
     }
     /* Passaggi CheckForObstacle) nel dettaglio

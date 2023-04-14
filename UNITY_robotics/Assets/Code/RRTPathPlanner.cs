@@ -21,7 +21,8 @@ public class RRTPathPlanner : MonoBehaviour
     private List<int> edges;
     private Vector3 lastSample;
     private int goalNode;
-    private bool stop = false; 
+    private bool stop = false;
+    private bool firstSample = true; 
 
     void Start()
     {
@@ -237,10 +238,53 @@ public class RRTPathPlanner : MonoBehaviour
         {
             return false;
         }
+        if (firstSample)
+        {
+            if (CheckFirstDirection(start, sample)==false)
+            {
+                return false; //direzione del sample non è conforme a quella dei due oggetti di riferimento.
+            }
+            // Trovato il primo sample, check sulla direzione non più necessario
+            firstSample = false;
+        }
         // Aggiorna la variabile lastSample con le coordinate del campione generato validato
         lastSample = sample;
         return true;
     }
+
+
+    bool CheckFirstDirection(Transform start, Vector3 Firstsample)
+    {
+        // Recupera gli oggetti di riferimento per la direzione
+        GameObject directionObject1 = GameObject.Find("Post-puntura-PRE");
+        GameObject directionObject2 = GameObject.Find("Post-puntura-POST");
+
+        if (directionObject1 == null || directionObject2 == null)
+        {
+            Debug.LogError("Non è stato possibile trovare gli oggetti di riferimento per la direzione.");
+            return false;
+        }
+
+        // Ottiene la direzione dei due oggetti di riferimento
+        Vector3 direction = (directionObject2.transform.position - directionObject1.transform.position).normalized;
+
+        // Calcola la direzione tra il punto di partenza e il primo sample generato
+        Vector3 sampleDirection = (Firstsample - start.position).normalized;
+
+        // Verifica che le due direzioni siano simili, entro una soglia prestabilita
+        float angleThreshold = 5f; // soglia di tolleranza dell'angolo (in gradi)
+        float angle = Vector3.Angle(sampleDirection, direction);
+        if (angle < angleThreshold)
+        {
+            return true;
+        }
+        else
+        {
+            Debug.Log("La direzione del sample non è conforme a quella dei due oggetti di riferimento.");
+            return false;
+        }
+    }
+
 
 
     /*Il metod GetNearestNode trova il nodo più vicino al campione casuale.*/

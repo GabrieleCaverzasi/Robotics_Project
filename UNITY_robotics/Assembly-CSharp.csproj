@@ -75,6 +75,7 @@
     <Compile Include="Assets/Code/Altri codici/Cylinder/objectControl.cs" />
     <Compile Include="Assets/Code/RRTPathPlanner.cs" />
     <Compile Include="Assets/Code/Altri codici/RRT/RRTStrategies/RRTStar.cs" />
+    <Compile Include="Assets/Code/RRT_AGGIORNATO.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/Packages/MathNet.Numerics.5.0.0/lib/netstandard2.0/MathNet.Numerics.xml" />

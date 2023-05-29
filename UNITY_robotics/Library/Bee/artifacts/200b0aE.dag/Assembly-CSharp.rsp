@@ -358,6 +358,7 @@
 "Assets/Code/Altri codici/RRT/RRTStrategies/RRTStarInformedPruningEllipse.cs"
 "Assets/Code/Altri codici/RRT/Tree.cs"
 "Assets/Code/RRTPathPlanner.cs"
+"Assets/Code/RRT_AGGIORNATO.cs"
 -langversion:9.0
 
 /deterministic

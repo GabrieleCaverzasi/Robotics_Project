@@ -14,7 +14,7 @@ public class RRTPathPlanner : MonoBehaviour
     public float Curvature = 0.02618f; // K max (2.618*10^-2 mm^-1)
     public float diameter_chateter = 3.4f; //3.4 mm
     public int maxIterations = 100;
-    public float stepSize_chateter = 10f; //10 mm, distanza tra due "joint"
+    public float stepSize_chateter = 10f; //10 mm, distanza tra due "joint" *()
     private float RealToUnity = 0.735294f; //Questo parametro permette di convertire i valori reali in quelli della scena di unity
 
     private List<Vector3> nodes;
@@ -55,36 +55,6 @@ public class RRTPathPlanner : MonoBehaviour
     * cerca di connettere il nodo più vicino a un nuovo campione valido.
     * Se il campione si connette con il nodo finale, viene creato un nuovo nodo finale e l'algoritmo termina.*/
 
-    void BuildNewRTT()
-    {
-        Debug.Log("Metodo BuildRRT()");
-        int i = 0;
-        bool found = false;
-        do
-        {
-            Vector3 sample = GetRandomSample();
-            if(CheckRandomSample(sample)){
-                int nearest = GetNearestNode(sample);
-                if (CheckEdge(nodes[nearest], sample))
-                {
-                    int newNode = AddNode(sample);
-                    AddEdge(nearest, newNode);
-
-                    if (CheckEdge(sample, goal.position))
-                    {
-                        goalNode = AddNode(goal.position);
-                        AddEdge(newNode, goalNode);
-                        //Debug.Log("Punto Trovato");
-                        found = true;
-                    }
-                }
-            }
-            i++;
-        }while (found == false || i<maxIterations);
-        Debug.Log("found = " + found);
-        Debug.Log("Numero iterazioni = " + i);
-    }
-
     void BuildRRT()
     {
         Debug.Log("Metodo BuildRRT()");
@@ -95,13 +65,15 @@ public class RRTPathPlanner : MonoBehaviour
             Vector3 sample = GetRandomSample(); //viene generato un punto casuale (sample)
             if (CheckRandomSample(sample))
             {
-                int nearest = GetNearestNode(sample); //viene cercato il nodo più vicino all'interno del grafo
-                if (CheckEdge(nodes[nearest], sample))
+                int nearest = GetNearestNode(sample); //viene cercato l'indice del nodo più vicino all'interno del grafo
+
+                if (CheckNode(nodes[nearest], sample))
                 {
+                    //Debug.Log("DEBUG Nearest: " + nearest + "nodes[Nearest]" + nodes[nearest]);
                     int newNode = AddNode(sample);
                     AddEdge(nearest, newNode);
 
-                    if (CheckEdge(sample, goal.position))
+                    if (CheckNode(sample, goal.position))
                     {
                         goalNode = AddNode(goal.position);
                         AddEdge(newNode, goalNode);
@@ -109,6 +81,8 @@ public class RRTPathPlanner : MonoBehaviour
                         break;
                     }
                 }
+                // Aggiorna la variabile lastSample con le coordinate del campione generato validato
+                lastSample = nodes[nearest];
             }
             i++;
         }
@@ -130,11 +104,12 @@ public class RRTPathPlanner : MonoBehaviour
      */
 
 
+    //CONFRONTARE CON COSA ESISTE GIA' RANDOM SAMPLE RRT NORMALE 
     /*Il metod GetRandomSample genera un campione casuale all'interno del diametro del robot, con una dimensione del passo specificata.*/
-    Vector3 GetRandomSample()
+    Vector3 GetRandomSample() //OK!!
     {
         // Dichiarazione di una variabile di tipo Vector3 per il campione casuale
-        Vector3 sample;
+        Vector3 candidate;
         float diameter = diameter_chateter * RealToUnity; 
         // Genera tre valori casuali per le coordinate x, y e z del punto, rispettivamente
         float x = Random.Range(-diameter / 2f, diameter / 2f);
@@ -143,14 +118,14 @@ public class RRTPathPlanner : MonoBehaviour
 
         // Calcola le coordinate del punto aggiungendo al campione precedente (lastSample) un nuovo vettore che ha
         // come componenti i valori casuali generati moltiplicati per la dimensione dello step (stepSize)
-        float stepSize = stepSize_chateter * RealToUnity; 
-        sample = lastSample + new Vector3(x, y, z) * stepSize;
+        float stepSize = stepSize_chateter * RealToUnity;
+        candidate = lastSample + new Vector3(x, y, z) * stepSize;
 
         // Aggiorna la variabile lastSample con le coordinate del campione appena generato
         //lastSample = sample;
 
         // Restituisce il campione casuale come risultato della funzione
-        return sample;
+        return candidate;
     }
     /*Passaggi GetRandomSample() nel dettaglio:
      * Vector3 sample; - Dichiarazione di una variabile di tipo Vector3 per il campione casuale che verrà generato.
@@ -162,76 +137,9 @@ public class RRTPathPlanner : MonoBehaviour
      * return sample; - Restituisce il campione casuale come risultato della funzione.
     */
 
-    //variazione della funzione, aggiungendo il fatto che i nodi si devono avvicinare al goal
-    Vector3 GetRandomSample_var1() 
-    {
-        // Dichiarazione di una variabile di tipo Vector3 per il campione casuale
-        Vector3 sample;
-        float diameter = diameter_chateter * RealToUnity;
 
-        // Calcola la distanza tra lastSample e il goal
-        float distanceToGoal = Vector3.Distance(lastSample, goal.position);
-
-        // Genera tre valori casuali per le coordinate x, y e z del punto, rispettivamente
-        float x = Random.Range(-diameter / 2f, diameter / 2f);
-        float y = Random.Range(-diameter / 2f, diameter / 2f);
-        float z = Random.Range(-diameter / 2f, diameter / 2f);
-
-        // Calcola le coordinate del punto aggiungendo al campione precedente (lastSample) un nuovo vettore che ha
-        // come componenti i valori casuali generati moltiplicati per la dimensione dello step (stepSize)
-        float stepSize = stepSize_chateter * RealToUnity;
-        sample = lastSample + new Vector3(x, y, z) * stepSize;
-
-        // Calcola la distanza tra il campione casuale e il goal
-        float distanceToSample = Vector3.Distance(sample, goal.position);
-
-        do
-        {
-            // Genera tre valori casuali per le coordinate x, y e z del punto, rispettivamente
-            x = Random.Range(-diameter / 2f, diameter / 2f);
-            y = Random.Range(-diameter / 2f, diameter / 2f);
-            z = Random.Range(-diameter / 2f, diameter / 2f);
-
-            // Calcola le coordinate del punto aggiungendo al campione precedente (lastSample) un nuovo vettore che ha
-            // come componenti i valori casuali generati moltiplicati per la dimensione dello step (stepSize)
-            stepSize = stepSize_chateter * RealToUnity;
-            sample = lastSample + new Vector3(x, y, z) * stepSize;
-
-            // Calcola la distanza tra il campione casuale e il goal
-            distanceToSample = Vector3.Distance(sample, goal.position);
-
-            // Continua a generare campioni casuali fino a quando non se ne trova uno che ha una distanza minore dal goal rispetto a lastSample
-        } while (distanceToSample >= distanceToGoal);
-
-        // Aggiorna la variabile lastSample con le coordinate del campione appena generato
-        lastSample = sample;
-
-        // Restituisce il campione casuale come risultato della funzione
-        return sample;
-    }
-    Vector3 GetRandomSample_var2() 
-    {
-        Vector3 sample;
-        float diameter = diameter_chateter * RealToUnity;
-        float stepSize = stepSize_chateter * RealToUnity;
-        float maxDistance = Vector3.Distance(goal.position, lastSample);
-
-        do
-        {
-            float x = Random.Range(-diameter / 2f, diameter / 2f);
-            float y = Random.Range(-diameter / 2f, diameter / 2f);
-            float z = Random.Range(-diameter / 2f, diameter / 2f);
-
-            sample = lastSample + new Vector3(x, y, z) * stepSize;
-        } while (Vector3.Distance(goal.position, sample) > maxDistance);
-
-        lastSample = sample;
-
-        return sample;
-    }
-
-
-    bool CheckRandomSample(Vector3 sample) //funzione che controlla se ci stiamo avvicinando al gol
+    //funzione che controlla se ci stiamo avvicinando al gol
+    bool CheckRandomSample(Vector3 sample) //OK!!
     {
         float maxDistance = Vector3.Distance(goal.position, lastSample);
         if(Vector3.Distance(goal.position, sample) > maxDistance)
@@ -247,13 +155,11 @@ public class RRTPathPlanner : MonoBehaviour
             // Trovato il primo sample, check sulla direzione non più necessario
             firstSample = false;
         }
-        // Aggiorna la variabile lastSample con le coordinate del campione generato validato
-        lastSample = sample;
         return true;
     }
 
 
-    bool CheckFirstDirection(Transform start, Vector3 Firstsample)
+    bool CheckFirstDirection(Transform start, Vector3 Firstsample) //OK!!
     {
         // Recupera gli oggetti di riferimento per la direzione
         GameObject directionObject1 = GameObject.Find("Post-puntura-PRE");
@@ -286,9 +192,8 @@ public class RRTPathPlanner : MonoBehaviour
     }
 
 
-
     /*Il metod GetNearestNode trova il nodo più vicino al campione casuale.*/
-    int GetNearestNode(Vector3 sample)
+    int GetNearestNode(Vector3 sample) //OK, schema su notability
     {
         // Inizializza la variabile nearest con l'indice del primo nodo (0)
         int nearest = 0;
@@ -326,13 +231,14 @@ public class RRTPathPlanner : MonoBehaviour
 
 
     /*Il metod CheckEdge verifica se il percorso tra due punti è valido, verificando la collisione con gli oggetti nell'ambiente e la curvatura massima consentita.*/
-    bool CheckEdge(Vector3 start, Vector3 end)
+    bool CheckNode(Vector3 start, Vector3 end) //DA TOGLIERE 
     {
         // Calcola la direzione dell'edge
         Vector3 direction = end - start;
 
         // Calcola la lunghezza dell'edge
         float distance = direction.magnitude;
+        Debug.Log(distance);
 
         // Normalizza la direzione dell'edge
         direction.Normalize();
@@ -345,7 +251,7 @@ public class RRTPathPlanner : MonoBehaviour
             Vector3 point = start + direction * i;
 
             // Verifica se il punto rispetta le condizioni di curvatura
-            if (!CheckCurvature(point))
+            if (!CheckCurvature(point)) //RRT + me 
             {
                 // Se il punto non rispetta le condizioni di curvatura, restituisce false
                 return false;
@@ -362,19 +268,27 @@ public class RRTPathPlanner : MonoBehaviour
         return true;
     }
     /*Passaggi CheckEdge() nel dettaglio:
-     * Vector3 direction = end - start; - Calcolo della direzione dell'edge, che corrisponde alla differenza tra il nodo di partenza start e il nodo di arrivo end.
-     * float distance = direction.magnitude; - Calcolo della lunghezza dell'edge, utilizzando il metod magnitude() che restituisce la lunghezza del vettore direction.
-     * direction.Normalize(); - Normalizzazione della direzione dell'edge, utilizzando il metod Normalize() che restituisce un vettore della stessa direzione ma di lunghezza unitaria.
-     * for (float i = 0; i <= distance; i += stepSize) - Ciclo che itera lungo l'edge con passi di dimensione stepSize, partendo dal nodo di partenza start e arrivando al nodo di arrivo end.
-     * Vector3 point = start + direction * i; - Calcolo del punto corrispondente all'i-esimo passo lungo l'edge, utilizzando la formula punto = puntoIniziale + direzione * passo.
-     * if (!CheckCurvature(point)) - Verifica se il punto corrente rispetta le condizioni di curvatura, utilizzando la funzione CheckCurvature() che restituisce true se il punto rispetta le condizioni di curvatura, false altrimenti.
-     * return false; - Se il punto corrente non rispetta le condizioni di curvatura, restituisce false, indicando che l'edge non rispetta le condizioni di curvatura.
-     * if (CheckCollision(point)) - Verifica se il punto corrente rispetta le condizioni di collisione, utilizzando la funzione CheckCollision() 
+     * Vector3 direction = end - start;
+     * Calcolo della direzione dell'edge, che corrisponde alla differenza tra il nodo di partenza start e il nodo di arrivo end.
+     * float distance = direction.magnitude;
+     * Calcolo della lunghezza dell'edge, utilizzando il metod magnitude() che restituisce la lunghezza del vettore direction.
+     * direction.Normalize();
+     * Normalizzazione della direzione dell'edge, utilizzando il metod Normalize() che restituisce un vettore della stessa direzione ma di lunghezza unitaria.
+     * for (float i = 0; i <= distance; i += stepSize) 
+     * Ciclo che itera lungo l'edge con passi di dimensione stepSize, partendo dal nodo di partenza start e arrivando al nodo di arrivo end.
+     * Vector3 point = start + direction * i; 
+     * Calcolo del punto corrispondente all'i-esimo passo lungo l'edge, utilizzando la formula punto = puntoIniziale + direzione * passo.
+     * if (!CheckCurvature(point))
+     * Verifica se il punto corrente rispetta le condizioni di curvatura, utilizzando la funzione CheckCurvature() che restituisce true se il punto rispetta le condizioni di curvatura, false altrimenti.
+     * return false;
+     * Se il punto corrente non rispetta le condizioni di curvatura, restituisce false, indicando che l'edge non rispetta le condizioni di curvatura.
+     * if (CheckCollision(point))
+     * Verifica se il punto corrente rispetta le condizioni di collisione, utilizzando la funzione CheckCollision() 
     /*
 
 
     /*Il metod CheckCurvature calcola la curvatura tra tre punti e verifica se rientra nella curvatura massima consentita.*/
-    bool CheckCurvature(Vector3 point)
+    bool CheckCurvature(Vector3 point) //SINGOLA FUNZIONE CON INPUT SAMPLE, NEAREST E LASTSAMPLE
     {
         Vector3 direction = point - nodes[GetNearestNode(point)];
         float distance = direction.magnitude;
@@ -496,6 +410,38 @@ public class RRTPathPlanner : MonoBehaviour
      * interseca la retta, restituisce false.
     */
 
+
+    bool CheckLastDirection(Vector3 Lastsample, Transform goal)
+    {
+        // Recupera gli oggetti di riferimento per la direzione
+        GameObject directionObject1 = GameObject.Find("target - PRE");
+        GameObject directionObject2 = GameObject.Find("target - POST");
+
+        if (directionObject1 == null || directionObject2 == null)
+        {
+            Debug.LogError("Non è stato possibile trovare gli oggetti di riferimento per la direzione.");
+            return false;
+        }
+
+        // Ottiene la direzione dei due oggetti di riferimento
+        Vector3 direction = (directionObject2.transform.position - directionObject1.transform.position).normalized;
+
+        // Calcola la direzione tra il punto di partenza e il primo sample generato
+        Vector3 sampleDirection = (goal.position - Lastsample).normalized;
+
+        // Verifica che le due direzioni siano simili, entro una soglia prestabilita
+        float angleThreshold = 5f; // soglia di tolleranza dell'angolo (in gradi)
+        float angle = Vector3.Angle(sampleDirection, direction);
+        if (angle < angleThreshold)
+        {
+            return true;
+        }
+        else
+        {
+            Debug.Log("La direzione del sample non è conforme a quella dei due oggetti di riferimento.");
+            return false;
+        }
+    }
 
 
     // Aggunge un nuovo nodo alla lista nodes
